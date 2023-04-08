@@ -35,10 +35,6 @@ const deleteContact = async (req, res) => {
 };
 
 const updateContactById = async (req, res) => {
-  //   const { error } = addSchema.validate(req.body);
-  //   if (error) {
-  //     throw HttpError(400, error.message);
-  //   }
   const { contactId } = req.params;
   const updateContact = await contacts.updateContact(contactId, req.body);
   if (!updateContact) {
