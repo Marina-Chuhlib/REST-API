@@ -1,48 +1,103 @@
-const contacts = require("../models/contacts");
+const Contact = require("../models");
+
+const asyncHandler = require("express-async-handler");
 
 const HttpError = require("../helpers");
 
 const { ctrlWrapper } = require("../utils");
 
-const getAllContacts = async (req, res) => {
-  const result = await contacts.listContacts();
-  res.json(result);
-};
+const getAllContacts = asyncHandler(async (req, res) => {
+  const result = await Contact.find({});
+  if (!result) {
+    throw HttpError(404, "Not found");
+  }
+  res
+    .status(200)
+    .json({ code: 200, message: "success", data: result, qty: result.length });
+});
 
-const getContactById = async (req, res) => {
+const getContactById = asyncHandler(async (req, res) => {
   const { contactId } = req.params;
-  const oneContact = await contacts.getContactById(contactId);
+  if (!contactId) {
+    throw HttpError(404, "Wrong id");
+  }
+
+  const oneContact = await Contact.findById({ _id: contactId });
   if (!oneContact) {
     throw HttpError(404, `Contact not found, wrong id: ${contactId}`);
   }
-  res.json(oneContact);
-};
+  res.status(200).json({
+    code: 200,
+    message: "success",
+    data: oneContact,
+  });
+});
 
-const postContact = async (req, res) => {
-  const newContact = await contacts.addContact(req.body);
-  res.status(201).json(newContact);
-};
+const postContact = asyncHandler(async (req, res) => {
+  const { name, phone } = req.body;
+  if (!name || !phone) {
+    throw HttpError(404, "Controller: provide all required files");
+  }
+
+  const newContact = await Contact.create({ ...req.body });
+  if (!newContact) {
+    throw HttpError(404, "Controller: unable to save contact");
+  }
+  res.status(200).json({
+    code: 200,
+    message: "success",
+    data: newContact,
+  });
+});
 
 const deleteContact = async (req, res) => {
   const { contactId } = req.params;
-  const deleteContact = await contacts.removeContact(contactId);
-  if (!deleteContact) {
+  console.log(contactId, "He4llo");
+
+  const result = await Contact.findByIdAndRemove({ _id: contactId });
+  if (!result) {
     throw HttpError(404, `Contact not found, wrong id: ${contactId}`);
   }
-  res.json({
+
+  res.status(200).json({
+    code: 200,
     message: "contact deleted",
   });
 };
 
-const updateContactById = async (req, res) => {
+const updateContactById = asyncHandler(async (req, res) => {
   const { contactId } = req.params;
-  const updateContact = await contacts.updateContact(contactId, req.body);
+  if (!contactId) {
+    throw HttpError(404, "Contact not found, wrong id");
+  }
+
+  const updateContact = await Contact.findByIdAndUpdate(
+    { _id: contactId },
+    { ...req.body },
+    { new: true }
+  );
   if (!updateContact) {
     throw HttpError(404, `Contact not found, wrong id: ${contactId}`);
   }
 
-  res.json(updateContact);
-};
+  res.status(200).json({ code: 200, data: updateContact });
+});
+
+const updateStatusContact = asyncHandler(async (req, res) => {
+  const { contactId } = req.params;
+  const { favorite } = req.body;
+
+  const result = await Contact.findByIdAndUpdate(
+    { _id: contactId },
+    { favorite },
+    { new: true }
+  );
+
+  if (!result) {
+    throw HttpError(404, "Missing field favorite");
+  }
+  res.status(200).json({ code: 200, data: result });
+});
 
 module.exports = {
   getAllContacts: ctrlWrapper(getAllContacts),
@@ -50,4 +105,5 @@ module.exports = {
   postContact: ctrlWrapper(postContact),
   deleteContact: ctrlWrapper(deleteContact),
   updateContactById: ctrlWrapper(updateContactById),
+  updateStatusContact: ctrlWrapper(updateStatusContact),
 };
