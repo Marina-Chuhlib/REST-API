@@ -8,7 +8,7 @@ const logout = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: null });
 
-  res.status(204).json({
+  return res.status(204).json({
     Status: 204,
   });
 });

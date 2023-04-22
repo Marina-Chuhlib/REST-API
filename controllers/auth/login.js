@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const path = require("path");
-const envPath = path.join(__dirname, "../../config", ".env");
+const envPath = path.join(__dirname, "..", "..", "config", ".env");
 require("dotenv").config({ path: envPath });
 
 const { User } = require("../../models");
@@ -31,9 +31,12 @@ const login = asyncHandler(async (req, res) => {
 
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
 
-  await User.findOneAndUpdate(user._id, { token });
+  const userWithToken = await User.findOneAndUpdate(user._id, { token });
+  if (!userWithToken) {
+    throw HttpError(400, "Unable to save token");
+  }
 
-  res.status(200).json({
+  return res.status(200).json({
     Status: 200,
     message: "Ok",
     ResponseBody: {

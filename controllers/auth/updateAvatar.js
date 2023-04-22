@@ -7,7 +7,7 @@ const { User } = require("../../models");
 
 const HttpError = require("../../helpers");
 
-const avatarPath = path.join(__dirname, "../../", "public", "avatars");
+const avatarPath = path.join(__dirname, "..", "..", "public", "avatars");
 
 const updateAvatar = asyncHandler(async (req, res) => {
   const { _id } = req.user;
@@ -29,7 +29,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
     throw HttpError(404, "Missing field avatar");
   }
 
-  res.status(200).json({ code: 200, avatarURL });
+  return res.status(200).json({ code: 200, avatarURL });
 });
 
 module.exports = updateAvatar;

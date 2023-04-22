@@ -31,7 +31,7 @@ const registration = asyncHandler(async (req, res) => {
     throw HttpError(404, "Controller: unable to save user");
   }
 
-  res.status(201).json({
+  return res.status(201).json({
     Status: 201,
     message: "Created",
     ResponseBody: {
