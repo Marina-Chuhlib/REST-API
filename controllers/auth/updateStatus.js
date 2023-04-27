@@ -17,7 +17,7 @@ const updateStatus = asyncHandler(async (req, res) => {
     throw HttpError(404, "Missing field subscription");
   }
 
-  res.status(200).json({ code: 200, ResponseBody: result });
+  return res.status(200).json({ code: 200, ResponseBody: result });
 });
 
 module.exports = updateStatus;
