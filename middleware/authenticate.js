@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const { User } = require("../models");
-const HttpError = require("../helpers");
+const { HttpError } = require("../helpers");
 
 const path = require("path");
 const envPath = path.join(__dirname, "../config", ".env");

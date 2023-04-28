@@ -2,7 +2,7 @@ const { Contact } = require("../../models");
 
 const asyncHandler = require("express-async-handler");
 
-const HttpError = require("../../helpers");
+const { HttpError } = require("../../helpers");
 
 const postContact = asyncHandler(async (req, res) => {
   const { name, phone } = req.body;

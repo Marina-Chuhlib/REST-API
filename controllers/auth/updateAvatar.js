@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 
 const { User } = require("../../models");
 
-const HttpError = require("../../helpers");
+const { HttpError } = require("../../helpers");
 
 const avatarPath = path.join(__dirname, "..", "..", "public", "avatars");
 
