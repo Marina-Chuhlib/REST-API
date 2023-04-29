@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 
 const { User } = require("../../models");
 
-const HttpError = require("../../helpers");
+const { HttpError } = require("../../helpers");
 
 const updateStatus = asyncHandler(async (req, res) => {
   const { subscription } = req.body;
